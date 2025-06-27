@@ -45,7 +45,7 @@ QMenu* TrayManager::createMenu() {
 void TrayManager::iconActivated(QSystemTrayIcon::ActivationReason reason) {
   switch (reason) {
     case QSystemTrayIcon::Trigger:
-      utils->toggle();
+      mainWindow->toggleVisibility();
       break;
     case QSystemTrayIcon::MiddleClick:
       utils->toggle();
