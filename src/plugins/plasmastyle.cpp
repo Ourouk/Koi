@@ -11,7 +11,7 @@ QStringList PlasmaStyle::getThemes(void) {
   QStringList plasmaStyles;
   QDir stylesLocalDir(QDir::homePath() + "/.local/share/plasma/desktoptheme");
   QDir stylesSystemDir("/usr/share/plasma/desktoptheme");
-  QDir stylesNixDir("/var/run/current-system/sw/share/plasma/desktoptheme");
+  QDir stylesNixDir("/run/current-system/profile/share/plasma/desktoptheme");
   if (stylesLocalDir.exists()) {
     plasmaStyles = plasmaStyles +
                    stylesLocalDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);

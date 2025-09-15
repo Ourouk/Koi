@@ -5,6 +5,7 @@ Name=Koi
 GenericName=Theme Switcher
 Comment=Scheduling LIGHT/DARK Theme Switcher for the KDE Plasma Desktop
 Icon=koi
+OnlyShowIn=KDE
 DBusActivatable=true
 Implements=dev.baduhai.Koi;local.KoiDbusInterface;org.freedesktop.DBus.Introspectable;org.freedesktop.DBus.Properties;org.freedesktop.DBus.Peer
 TryExec=koi

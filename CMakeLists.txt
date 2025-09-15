@@ -1,28 +1,60 @@
 cmake_minimum_required(VERSION 3.16)
-project(Koi VERSION 0.5.1 LANGUAGES CXX)
+project(Koi VERSION 0.6 LANGUAGES CXX)
 
+# Configure DBus Service File & Configure and Include configuration files
+configure_file(src/resources/dbus/services/dev.baduhai.Koi.service ${CMAKE_CURRENT_BINARY_DIR}/dev.baduhai.Koi.service)
 configure_file(src/headers/config.h.in config.h)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-
+#
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
-
+# Pre-set environmental variables for CMake BINARY
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-
+#
 # Define Installation Data-Root Directory
 set(CMAKE_INSTALL_DATAROOTDIR   share)
+#
+
 # Define *SYSTEM-WIDE* DBUS_INTERFACES_INSTALL_DIR variable
 set(DBUS_INTERFACES_INSTALL_DIR share/dbus-1/interfaces)
+#
 # Define *SYSTEM-WIDE* DBUS_SERVICES_INSTALL_DIR variable
 set(DBUS_SERVICES_INSTALL_DIR share/dbus-1/services)
+#
 
-# Configure DBus Service File
-configure_file(src/resources/dbus/services/dev.baduhai.Koi.service ${CMAKE_CURRENT_BINARY_DIR}/dev.baduhai.Koi.service)
+# Define environmental variables for Guix GNU/Linux ->
+# Patch Nix-specific paths in source files to Guix Linux equivalents; Might require manual adjustments according to one's needs . . .
+# For `colorscheme.cpp`
+file(READ "src/plugins/colorscheme.cpp" COLORS_CONTENT)
+string(REPLACE "/var/run/current-system/sw/share/color-schemes" "/run/current-system/profile/share/color-schemes" COLORS_CONTENT "${COLORS_CONTENT}")
+file(WRITE "src/plugins/colorscheme.cpp" "${COLORS_CONTENT}")
+#
+# For `kvantumstyle.cpp`
+file(READ "src/plugins/kvantumstyle.cpp" KVANTUM_CONTENT)
+string(REPLACE "/var/run/current-system/sw/Kvantum" "/run/current-system/profile/share/Kvantum" KVANTUM_CONTENT "${KVANTUM_CONTENT}")
+file(WRITE "src/plugins/kvantumstyle.cpp" "${KVANTUM_CONTENT}")
+#
+# For `icons.cpp`
+file(READ "src/plugins/icons.cpp" ICONS_CONTENT)
+string(REPLACE "/var/run/current-system/sw/share/icons" "/run/current-system/profile/share/icons" ICONS_CONTENT "${ICONS_CONTENT}")
+file(WRITE "src/plugins/icons.cpp" "${ICONS_CONTENT}")
+#
+# For `plasmastyle.cpp`
+file(READ "src/plugins/plasmastyle.cpp" PLASMA_CONTENT)
+string(REPLACE "/var/run/current-system/sw/share/plasma/desktoptheme" "/run/current-system/profile/share/plasma/desktoptheme" PLASMA_CONTENT "${PLASMA_CONTENT}")
+file(WRITE "src/plugins/plasmastyle.cpp" "${PLASMA_CONTENT}")
+#
+# For `gtk.cpp`
+file(READ "src/plugins/gtk.cpp" GTK_CONTENT)
+string(REPLACE "/var/run/current-system/sw/share/themes" "/run/current-system/profile/share/themes" GTK_CONTENT "${GTK_CONTENT}")
+file(WRITE "src/plugins/gtk.cpp" "${GTK_CONTENT}")
+#
+#
 
 # Install files not being a part of INSTALL TARGETS section
 install(FILES  ${CMAKE_CURRENT_BINARY_DIR}/dev.baduhai.Koi.xml     DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
@@ -31,7 +63,7 @@ install(FILES  src/koi.desktop                                     DESTINATION $
 install(FILES  src/resources/dbus/services/dev.baduhai.Koi.service DESTINATION ${DBUS_SERVICES_INSTALL_DIR})
 install(FILES  src/resources/icons/koi.svg                         DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/scalable/apps)
 install(FILES  src/resources/icons/koi_tray.svg                    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/scalable/apps)
-
+#
 # Look for DEPENDENCIES
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
@@ -43,7 +75,7 @@ find_package(QT NAMES Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS DBus Gui)
 find_package(Qt${QT_VERSION_MAJOR} OPTIONAL_COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} OPTIONAL_COMPONENTS Xml)
-
+#
 # Set SOURCES into a single BINARY
 set(koi_SRC
     # Main app stuff.
@@ -78,6 +110,7 @@ set(koi_SRC
     src/plugins/colorscheme.cpp
     src/plugins/gtk.cpp
     src/plugins/icons.cpp
+    src/plugins/konsole.cpp
     src/plugins/kvantumstyle.cpp
     src/plugins/plasmastyle.cpp
     src/plugins/wallpaper.cpp
@@ -85,7 +118,8 @@ set(koi_SRC
     # Main entrypoint
     src/main.cpp
 )
-
+#
+# Setup and Configure DBus Interface
 qt_generate_dbus_interface(src/headers/dbusinterface.h
     dev.baduhai.Koi.xml
     OPTIONS -A
@@ -93,15 +127,17 @@ qt_generate_dbus_interface(src/headers/dbusinterface.h
 
 qt_add_dbus_adaptor(koi_SRC ${CMAKE_CURRENT_BINARY_DIR}/dev.baduhai.Koi.xml
                      src/headers/dbusinterface.h KoiDbusInterface)
-
-
+#
+# Generate Executable BINARY
 add_executable(koi
     ${koi_SRC}
 )
-
+#
+# Ensure deprecated compiler warnings
 target_compile_definitions(koi PUBLIC
     QT_DEPRECATED_WARNINGS
 )
+#
 
 # Link SYSTEM libraries with the Koi project
 target_link_libraries(koi PUBLIC
@@ -116,15 +152,15 @@ target_link_libraries(koi PUBLIC
     Qt::Xml
     Threads::Threads
 )
-
-# Install target
+#
+# Installation target
 install(TARGETS koi
     RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"
     BUNDLE DESTINATION "${INSTALL_EXAMPLEDIR}"
     LIBRARY DESTINATION "${INSTALL_EXAMPLEDIR}"
 )
-
-# Uninstall target
+#
+# Uninstallation target
 configure_file(
   "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
   "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
@@ -133,3 +169,4 @@ configure_file(
 add_custom_target(uninstall
   COMMAND "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
 )
+#

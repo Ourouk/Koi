@@ -10,7 +10,7 @@ void KvantumStyle::setTheme(QString kvantumStyle) {
 QStringList KvantumStyle::getThemes() {
   QDir kvantumStyleLocalDir(QDir::homePath() + "/.config/Kvantum");
   QDir kvantumStyleSystemDir("/usr/share/Kvantum");
-  QDir kvantumStyleNixDir("/var/run/current-system/sw/Kvantum");
+  QDir kvantumStyleNixDir("/run/current-system/profile/share/Kvantum");
   QDir kvantumStyleDirs[] = {kvantumStyleLocalDir, kvantumStyleSystemDir, kvantumStyleNixDir};
   QStringList kvantumStyles;
   for (const auto& dir : kvantumStyleDirs) {

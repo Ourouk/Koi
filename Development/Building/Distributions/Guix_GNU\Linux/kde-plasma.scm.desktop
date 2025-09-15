@@ -1,0 +1,5 @@
+[Desktop Entry]
+Icon=text-html
+Name=kde-plasma.scm
+Type=Link
+URL[$e]=https://codeberg.org/guix/guix/src/branch/master/gnu/packages/kde-plasma.scm#L925

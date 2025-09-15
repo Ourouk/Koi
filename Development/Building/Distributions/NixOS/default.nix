@@ -10,7 +10,7 @@
 }:
 stdenv.mkDerivation rec {
   pname = "koi";
-  version = "0.5.1";
+  version = "0.6";
 
   src = fetchFromGitHub {
     owner = "baduhai";
@@ -38,12 +38,13 @@ stdenv.mkDerivation rec {
 
       Features:
 
-      - Toggle between light and dark presets based on time
+      - Toggle between LIGHT and DARK presets based on time & place
       - Change Plasma style
-      - Change Qt colour scheme
+      - Change QT colour scheme
       - Change Icon theme
       - Change GTK theme
-      - Change wallpaper
+      - Change KDE Konsole theme
+      - Change Wallpaper
       - Hide application to system tray
       - Toggle between LIGHT/DARK themes by clicking mouse wheel
     '';
