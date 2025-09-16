@@ -25,7 +25,7 @@ QStringList Icons::getThemes() {
   QDir iconsOldLocalDir(QDir::homePath() + "/.icons");
   QDir iconsLocalDir(QDir::homePath() + "/.local/share/icons");
   QDir iconsSystemDir("/usr/share/icons");
-  QDir iconsNixDir("/var/run/current-system/sw/share/icons");
+  QDir iconsNixDir("/run/current-system/profile/share/icons");
   QStringList iconThemes;
   if (iconsOldLocalDir.exists()) {
     iconThemes = iconThemes +

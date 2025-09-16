@@ -2,11 +2,11 @@
 if(NOT EXISTS "@CMAKE_BINARY_DIR@/install_manifest.txt")
   message(FATAL_ERROR "Cannot find install manifest: @CMAKE_BINARY_DIR@/install_manifest.txt")
 endif()
-
+#
 # Read the list of installed files from the manifest
 file(READ "@CMAKE_BINARY_DIR@/install_manifest.txt" files)
 string(REGEX REPLACE "\n" ";" files "${files}")
-
+#
 # Iterate over each file and remove it
 foreach(file ${files})
   message(STATUS "Uninstalling \"${file}\"")
@@ -22,3 +22,4 @@ foreach(file ${files})
     message(STATUS "File \"${file}\" does not exist.")
   endif()
 endforeach()
+#

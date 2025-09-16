@@ -16,7 +16,7 @@ void Gtk::setTheme(QString theme) {
 QStringList Gtk::getThemes() {
   QDir gtkLocalDir(QDir::homePath() + "/.themes");
   QDir gtkSystemDir("/usr/share/themes");
-  QDir gtkNixDir("/var/run/current-system/sw/share/themes");
+  QDir gtkNixDir("/run/current-system/profile/share/themes");
   QStringList gtkThemes;
   if (gtkLocalDir.exists()) {
     gtkThemes =

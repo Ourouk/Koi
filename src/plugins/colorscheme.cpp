@@ -22,7 +22,7 @@ QStringList ColorScheme::getThemes() {
   QStringList colorSchemesNames;
   QDir colorsLocalDir(QDir::homePath() + "/.local/share/color-schemes");
   QDir colorsSystemDir("/usr/share/color-schemes");
-  QDir colorsNixDir("/var/run/current-system/sw/share/color-schemes");
+  QDir colorsNixDir("/run/current-system/profile/share/color-schemes");
   if (colorsLocalDir.exists()) {
     colorsLocalDir.setNameFilters(QStringList() << "*.colors");
     colorsLocalDir.setFilter(QDir::Files);

@@ -4,7 +4,7 @@
 
 pkgname='koi'
 _pkgname='Koi'
-pkgver=0.5.1
+pkgver=0.6
 pkgrel=1
 pkgdesc="Scheduled LIGHT/DARK Theme Switching for the KDE Plasma Desktop"
 arch=('x86_64' 'aarch64')
@@ -13,23 +13,23 @@ license=('LGPL3')
 depends=('gcc-libs' 'plasma-desktop' 'plasma-integration' 'plasma-workspace' 'qt6-svg' 'hicolor-icon-theme')
 makedepends=('gcc' 'qt6-base' 'qt6-tools' 'cmake' 'extra-cmake-modules' 'desktop-file-utils' 'fdupes')
 optdepends=('xsettingsd: Apply settings to GTK applications on the fly'
-            'kvantum: Powerful extra customisable themes')
+    'kvantum: Powerful extra customisable themes')
 source=("${pkgname}-${pkgver}.tar.gz::${url}/archive/refs/tags/${pkgver}.tar.gz")
 md5sums=('SKIP')
 
 build() {
     cmake -DCMAKE_BUILD_TYPE=Release \
-          -DCMAKE_INSTALL_PREFIX="${pkgdir}/usr/" \
-          -S "${srcdir}/${_pkgname}-${pkgver}/" \
-          -B "${srcdir}/${_pkgname}-${pkgver}/build/"
+        -DCMAKE_INSTALL_PREFIX="${pkgdir}/usr/" \
+        -S "${srcdir}/${_pkgname}-${pkgver}/" \
+        -B "${srcdir}/${_pkgname}-${pkgver}/build/"
 
-    cmake --build "${srcdir}/${_pkgname}-${pkgver}/build/" --parallel
+    cmake --build "${srcdir}/${_pkgname}-${pkgver}/build/" --parallel # Remove `--parallel` on weaker hardware
 }
 
 package() {
     cmake --install "${srcdir}/${_pkgname}-${pkgver}/build/"
 
-# Check the Application .DESKTOP file & Look for Duplicates within `pkgdir` ...
+    # Check the Application .DESKTOP file & Look for Duplicates within `pkgdir` ...
     desktop-file-validate "${pkgdir}/usr/share/applications/local.${_pkgname}DbusInterface.desktop"
-    fdupes -r -s          "${pkgdir}/"
+    fdupes -r -s "${pkgdir}/"
 }
